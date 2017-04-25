@@ -3,3 +3,4 @@ src/main/resources/*
 .idea/*
 capstone-ui/target/*
 project/target/*
+project/project/*
