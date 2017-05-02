@@ -1,11 +1,12 @@
 package observatory
 
 
+import java.io.File
+
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.prop.Checkers
-
 import Visualization._
 
 @RunWith(classOf[JUnitRunner])
@@ -93,5 +94,13 @@ class VisualizationTest extends FunSuite with Checkers {
 
   test("Color interpolation 5") {
     assert(interpolateColor(colors, -7.5) == Color(0, 128, 255))
+  }
+
+  test("visualize image from 1975") {
+    val records = Extraction.locateTemperatures(1975, "/stations.csv", "/1975.csv")
+    val avgs = Extraction.locationYearlyAverageRecords(records)
+    val image = visualize(avgs,colors = colors)
+    val result = image.output(new File("target/1975.png"))
+    assert(result !== null)
   }
 }

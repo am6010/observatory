@@ -127,7 +127,18 @@ object Visualization {
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)]): Image = {
-    ???
+
+    val colorsVector: Stream[Location] = (for {
+      lat <- 90 to -89 by -1
+      lon <- -180 to 179
+    } yield Location(lat, lon)).toStream
+
+    val pixels = colorsVector.par
+      .map(loc => predictTemperature(temperatures, loc))
+      .map(temperature => interpolateColor(colors, temperature))
+      .map(color => Pixel(color.red, color.green, color.blue, 255))
+      .toArray
+    Image(360, 180, pixels = pixels)
   }
 
 }
