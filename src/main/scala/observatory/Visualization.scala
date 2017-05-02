@@ -25,13 +25,18 @@ object Visualization {
     * @return The Spherical distance between both input points
     */
   def calculateSphericalDistance(loc1: Location, loc2: Location): Double = {
+
+    def myACos(cos: Double): Double = {
+      (-0.69813170079773212 * cos * cos - 0.87266462599716477) * cos + 1.5707963267948966
+    }
+
     val arcCosInput = math.sin(loc1.lat) * math.sin(loc2.lat) +
       math.cos(loc1.lat) * math.cos(loc2.lat) * math.cos(math.abs(loc1.lon - loc2.lon))
 
     arcCosInput match {
-      case _ if arcCosInput >= 1 => math.acos(1)
-      case _ if arcCosInput <= -1 => math.acos(-1)
-      case _ => math.acos(arcCosInput)
+      case _ if arcCosInput >= 1 => 0
+      case _ if arcCosInput <= -1 => math.Pi
+      case _ => myACos(arcCosInput)
     }
   }
 
@@ -79,7 +84,7 @@ object Visualization {
     val min = points.minBy(_._1)
 
     def keep2ClosestPoints(seq: Seq[(Double, Color)], point: (Double, Color)): Seq[(Double, Color)] = {
-      if (seq.isEmpty || seq.size < 2) {
+      if (seq.size < 2) {
         seq :+ point
       } else {
         val dif = math.abs(point._1 - value)
