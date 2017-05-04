@@ -14,7 +14,11 @@ object Interaction {
     * @return The latitude and longitude of the top-left corner of the tile, as per http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     */
   def tileLocation(zoom: Int, x: Int, y: Int): Location = {
-    ???
+    val Pi =  math.Pi
+    Location(
+      math.atan(math.sinh(Pi - (2 * Pi * y) / math.pow(2, zoom))).toDegrees,
+      ((x * 2 * Pi / math.pow(2, zoom)) - Pi).toDegrees
+    )
   }
 
   /**
