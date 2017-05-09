@@ -68,7 +68,7 @@ object Interaction {
 
     for {
       (year, data) <-  yearlyData.par
-      (zoom, x, y) <- tiles
+      (zoom, x, y) <- tiles.par
     } {
       generateImage(year, zoom, x, y, data)
     }
