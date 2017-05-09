@@ -7,6 +7,8 @@ import com.sksamuel.scrimage.{Image, Pixel}
   */
 object Interaction {
 
+  val TILE_SIZE: Int = 256
+
   /**
     * @param zoom Zoom level
     * @param x X coordinate
@@ -31,9 +33,9 @@ object Interaction {
     */
   def tile(temperatures: Iterable[(Location, Double)], colors: Iterable[(Double, Color)], zoom: Int, x: Int, y: Int): Image = {
     val coordinates = for {
-      i <- 0  until 255
-      j <- 0  until 255
-    } yield (256 * x + i, 256 * y + j)
+      j <- 0  until TILE_SIZE
+      i <- 0  until TILE_SIZE
+    } yield (TILE_SIZE * x + i, TILE_SIZE * y + j)
 
     val pixels = coordinates.toParArray.map{case (z, l)=>
       val location = tileLocation(8 + zoom, z, l)
@@ -42,7 +44,7 @@ object Interaction {
       Pixel(color.red, color.green, color.blue, 127)
     }.toArray
 
-    Image(256, 256, pixels)
+    Image(TILE_SIZE, TILE_SIZE, pixels)
   }
 
   /**
