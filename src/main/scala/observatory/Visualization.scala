@@ -58,7 +58,7 @@ object Visualization {
 
     val convertedLocation = convertDegreesToRadiant(location)
 
-    val distances = temperatures.par.map { case (loc, temp) =>
+    val distances = temperatures.map { case (loc, temp) =>
       (calculateSphericalDistance(convertedLocation, convertDegreesToRadiant(loc)), temp)
     }
 

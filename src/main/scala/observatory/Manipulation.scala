@@ -1,5 +1,9 @@
 package observatory
 
+import Visualization._
+
+import scala.collection.parallel.immutable.ParMap
+
 /**
   * 4th milestone: value-added information
   */
@@ -11,7 +15,16 @@ object Manipulation {
     *         returns the predicted temperature at this location
     */
   def makeGrid(temperatures: Iterable[(Location, Double)]): (Int, Int) => Double = {
-    ???
+   val cor = for {
+      lat <- -89 to 90 by 1
+      lon <- -180 to 179 by 1
+    } yield Location(lat, lon)
+
+    val grid: ParMap[(Int,Int), Double]= cor.par.foldLeft(ParMap.empty[(Int, Int), Double]) { (map, loc) =>
+      map + ((loc.lat.toInt, loc.lon.toInt) -> predictTemperature(temperatures, loc))
+    }
+
+    (lat, lon) => grid((lat, lon))
   }
 
   /**
