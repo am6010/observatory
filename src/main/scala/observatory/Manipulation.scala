@@ -46,11 +46,18 @@ object Manipulation {
 
   /**
     * @param temperatures Known temperatures
-    * @param normals      A grid containing the “normal” temperatures
+    * @param normals A grid containing the “normal” temperatures
     * @return A sequence of grids containing the deviations compared to the normal temperatures
     */
   def deviation(temperatures: Iterable[(Location, Double)], normals: (Int, Int) => Double): (Int, Int) => Double = {
-    ???
+    val grid = makeGrid(temperatures)
+
+    val map = cor.map {
+      case Location(lat, lon) =>
+      ((lat.toInt, lon.toInt), grid(lat.toInt, lon.toInt) - normals(lat.toInt, lon.toInt))
+    }.toMap
+
+    (lat, lon) => map((lat, lon))
   }
 
 
