@@ -1,6 +1,8 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import Interaction._
+import Visualization._
 
 /**
   * 5th milestone: value-added information visualization
@@ -25,7 +27,8 @@ object Visualization2 {
     d10: Double,
     d11: Double
   ): Double = {
-    ???
+    (d00 * (1 - x) * (1-y)) + (d10 * x * (1-y))+
+      (d01 * (1-x) * y) + (d11 * x * y)
   }
 
   /**
@@ -43,7 +46,28 @@ object Visualization2 {
     x: Int,
     y: Int
   ): Image = {
-    ???
+    val coordinates = for {
+      j <- 0  until TILE_SIZE
+      i <- 0  until TILE_SIZE
+    } yield (TILE_SIZE * x + i, TILE_SIZE * y + j)
+
+    val pixels = coordinates.par.map { case (z, l) =>
+      val location = tileLocation(zoom + 8, z, l)
+      val floorLat = math.floor(location.lat).toInt
+      val floorLon = math.floor(location.lon).toInt
+      val prediction = bilinearInterpolation(
+        location.lat - floorLat,
+        location.lon - floorLon,
+        grid(floorLat, floorLon),
+        grid(floorLat, floorLon + 1),
+        grid(floorLat + 1, floorLon),
+        grid(floorLat + 1, floorLon + 1)
+      )
+      val color = interpolateColor(colors, prediction)
+      Pixel(color.red, color.green, color.blue, 127)
+    }
+
+    Image(TILE_SIZE, TILE_SIZE, pixels.toArray)
   }
 
 }
