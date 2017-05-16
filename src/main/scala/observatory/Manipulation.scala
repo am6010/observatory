@@ -39,8 +39,9 @@ object Manipulation {
     val map = temperaturess.par
       .map(temperatures => makeGrid(temperatures))
       .flatMap(grid => cor.map(x => ((x.lat.toInt, x.lon.toInt), grid(x.lat.toInt, x.lon.toInt))))
-      .groupBy(_._1)
-      .mapValues(x => x.map(_._2).sum / years)
+      .foldLeft(Map.empty[(Int, Int), Double]){(map,e) =>
+          map + (e._1 -> (map.getOrElse(e._1, 0D) + e._2))
+      }.mapValues(_ / years)
     (lat, lon) => map((lat, lon))
   }
 
