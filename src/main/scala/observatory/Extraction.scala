@@ -39,7 +39,7 @@ object Extraction {
       temperature <- Try(fahrenheitToCelcius(l(4).toDouble)).toOption
     } yield ((l(0), l(1)), date, temperature)
 
-    val stationsMap = stationData.par
+    val stationsMap = stationData
       .foldLeft(Map.empty[(String, String), Location]){(map, value) => map.updated(value._1, value._2)}
 
     temperatureData.par.filter(x => stationsMap.contains(x._1)).map{ case (key, date, temperature) =>
@@ -53,7 +53,7 @@ object Extraction {
     * @return A sequence containing, for each location, the average temperature over the year.
     */
   def locationYearlyAverageRecords(records: Iterable[(LocalDate, Location, Double)]): Iterable[(Location, Double)] = {
-    val groupedData = records.par.foldLeft(Map.empty[Location, (Double, Long)]){ (map, record) =>
+    val groupedData = records.foldLeft(Map.empty[Location, (Double, Long)]){ (map, record) =>
       val oldVal = map.getOrElse(record._2, (0D, 0L))
       map.updated(record._2, (oldVal._1 + record._3, oldVal._2 + 1))
     }

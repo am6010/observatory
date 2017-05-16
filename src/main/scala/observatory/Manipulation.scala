@@ -36,7 +36,7 @@ object Manipulation {
     */
   def average(temperaturess: Iterable[Iterable[(Location, Double)]]): (Int, Int) => Double = {
     val years = temperaturess.size
-    val map = temperaturess
+    val map = temperaturess.par
       .map(temperatures => makeGrid(temperatures))
       .flatMap(grid => cor.map(x => ((x.lat.toInt, x.lon.toInt), grid(x.lat.toInt, x.lon.toInt))))
       .groupBy(_._1)

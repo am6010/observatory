@@ -3,7 +3,6 @@ package observatory
 import java.io.File
 
 import observatory.Manipulation._
-import observatory.Interaction.tile
 import observatory.Visualization2._
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
