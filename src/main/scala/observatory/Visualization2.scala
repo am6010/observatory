@@ -46,6 +46,11 @@ object Visualization2 {
     x: Int,
     y: Int
   ): Image = {
+
+    def normalizeBounds(value: Int, min: Int, max: Int): Int = {
+      math.max(math.min(value, max), min)
+    }
+
     val coordinates = for {
       j <- 0  until TILE_SIZE
       i <- 0  until TILE_SIZE
@@ -53,8 +58,8 @@ object Visualization2 {
 
     val pixels = coordinates.par.map { case (z, l) =>
       val location = tileLocation(zoom + 8, z, l)
-      val floorLat = math.floor(location.lat).toInt
-      val floorLon = math.floor(location.lon).toInt
+      val floorLat = normalizeBounds(math.floor(location.lat).toInt, -88, 89)
+      val floorLon = normalizeBounds(math.floor(location.lon).toInt, -179, 178)
       val prediction = bilinearInterpolation(
         location.lat - floorLat,
         location.lon - floorLon,

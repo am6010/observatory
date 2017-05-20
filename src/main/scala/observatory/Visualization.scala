@@ -55,22 +55,20 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Double)], location: Location): Double = {
-
+    var num = 0D
+    var den = 0D
     val convertedLocation = convertDegreesToRadiant(location)
 
-    val distances = temperatures.map { case (loc, temp) =>
-      (calculateSphericalDistance(convertedLocation, convertDegreesToRadiant(loc)), temp)
+    for ((loc, temp) <- temperatures) {
+      val dist = calculateSphericalDistance(convertedLocation, convertDegreesToRadiant(loc))
+      if (dist <= 0.001) {
+        return temp
+      }
+      val weight = calculateWeight(dist)
+      num += weight * temp
+      den += weight
     }
-
-    val lessThanOneKM = distances.find(_._1 <= 0.001)
-
-    if (lessThanOneKM.isDefined) {
-      lessThanOneKM.get._2
-    } else {
-      val weights = distances.map { case (dist, temp) => (calculateWeight(dist), temp) }
-      val (numerator, denominator) = weights.foldLeft((0d, 0d))((s, e) => (s._1 + e._1 * e._2, s._2 + e._1))
-      numerator / denominator
-    }
+    num / den
   }
 
   /**

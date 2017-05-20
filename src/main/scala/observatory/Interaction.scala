@@ -7,7 +7,8 @@ import com.sksamuel.scrimage.{Image, Pixel}
   */
 object Interaction {
 
-  val TILE_SIZE: Int = 256
+  val PIXEL_LEVEL: Int = 7
+  val TILE_SIZE: Int = math.round(math.pow(2, PIXEL_LEVEL)).toInt
 
   /**
     * @param zoom Zoom level
@@ -38,7 +39,7 @@ object Interaction {
     } yield (TILE_SIZE * x + i, TILE_SIZE * y + j)
 
     val pixels = coordinates.toParArray.map{case (z, l)=>
-      val location = tileLocation(8 + zoom, z, l)
+      val location = tileLocation(PIXEL_LEVEL + zoom, z, l)
       val prediction = Visualization.predictTemperature(temperatures, location)
       val color = Visualization.interpolateColor(colors, prediction)
       Pixel(color.red, color.green, color.blue, 127)
@@ -67,7 +68,7 @@ object Interaction {
 
 
     for {
-      (year, data) <-  yearlyData.par
+      (year, data) <-  yearlyData
       (zoom, x, y) <- tiles.par
     } {
       generateImage(year, zoom, x, y, data)

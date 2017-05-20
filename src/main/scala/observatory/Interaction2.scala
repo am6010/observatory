@@ -18,7 +18,7 @@ object Interaction2 {
     */
   def availableLayers: Seq[Layer] = {
     Seq(
-      Layer(LayerName.Temperatures, colors, 1975 until 1990),
+      Layer(LayerName.Temperatures, colors, 2010 until 2015),
       Layer(LayerName.Deviations, colors, 1990 to 2015)
     )
   }
@@ -58,8 +58,8 @@ object Interaction2 {
       val name = layer.layerName
       val year = selectedYear()
       name match {
-        case Temperatures => s"target/${Temperatures.id}/$year/"
-        case Deviations => s"target/${Deviations.id}/$year"
+        case Temperatures => s"target/${Temperatures.id}/$year/{z}/{x}-{y}.png"
+        case Deviations => s"target/${Deviations.id}/$year/{z}/{x}-{y}.png"
       }
     }
   }
